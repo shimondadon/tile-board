@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <Button
+        android:id="@+id/Button1"
+        android:background="@drawable/border"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="1"
+        app:layout_constraintEnd_toStartOf="@+id/Button2"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/Button2"
+        android:background="@drawable/border"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="2"
+        app:layout_constraintStart_toEndOf="@+id/Button1"
+        app:layout_constraintEnd_toStartOf="@+id/Button3" />
+
+    <Button
+        android:id="@+id/Button3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="3"
+        app:layout_constraintStart_toEndOf="@+id/Button2"
+        app:layout_constraintEnd_toStartOf="@+id/Button4"
+        android:background="@drawable/border" />
+
+    <Button
+        android:id="@+id/Button4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="4"
+        app:layout_constraintStart_toEndOf="@id/Button3"
+        app:layout_constraintEnd_toStartOf="@+id/Button5"
+        android:background="@drawable/border" />
+
+    <Button
+        android:id="@+id/Button5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="5"
+        app:layout_constraintStart_toEndOf="@+id/Button4"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/border" />
+
+</android.support.constraint.ConstraintLayout>
