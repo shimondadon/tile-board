@@ -13,7 +13,6 @@ import java.util.List;
 import board.shimon.theboard.custom.BoardRow;
 import board.shimon.theboard.custom.EndlessRecyclerOnScrollListener;
 import board.shimon.theboard.custom.RecyclerAdapter;
-import board.shimon.theboard.custom.TileClickInterface;
 
 public class MainActivity extends AppCompatActivity{
     private List<BoardRow> mStringList;
@@ -27,11 +26,11 @@ public class MainActivity extends AppCompatActivity{
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.my_recycler_view);
 
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this, DividerItemDecoration.VERTICAL));
+        //this for remove the spaces beatween the rows
+        recyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this, 0));
         mStringList = new ArrayList<>();
         recyclerAdapter = new RecyclerAdapter(mStringList,getApplicationContext(),recyclerView);
         recyclerView.setAdapter(recyclerAdapter);

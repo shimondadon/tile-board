@@ -36,6 +36,8 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
             for (Button b : ViewHolder.listOfReletedButton) {
                 b.setBackgroundDrawable((Drawable) b.getTag());
             }
+            //hide popup window
+            ViewHolder.hidePopupWindow();
             ViewHolder.listOfReletedButton.clear();
         }
     }
@@ -49,6 +51,8 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
+        //hide popup window
+        ViewHolder.hidePopupWindow();
 
         int visibleItemCount = recyclerView.getChildCount();
         int totalItemCount = recyclerView.getLayoutManager().getItemCount();

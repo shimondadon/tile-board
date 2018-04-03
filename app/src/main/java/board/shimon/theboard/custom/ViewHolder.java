@@ -2,13 +2,21 @@ package board.shimon.theboard.custom;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.content.Context;
+import android.widget.TextView;
 
 import com.tooltip.Tooltip;
 
@@ -31,6 +39,7 @@ class ViewHolder extends RecyclerView.ViewHolder {
     //static for handle the scroll reset
     public static ArrayList<Button> listOfReletedButton;
     Context applicationContext;
+    public static PopupWindow popupWindow;
 
     ViewHolder(View itemView, RecyclerAdapter recyclerAdapter, RecyclerView recyclerView) {
         super(itemView);
@@ -43,10 +52,24 @@ class ViewHolder extends RecyclerView.ViewHolder {
      * handle long click for all the buttons
      * save all the buttton that we change them the Background for later rest
      * change only button that are on the screen when long press in happened
+     * ans show the popup window
      * @param v
      * @param testedList the factor of the clicked tile
      */
-    private void handleLongClick(View v, List<Integer> testedList){
+    private void handleLongClick(View v, List<Integer> testedList , String number ){
+        //show the popup window and set the text
+        LayoutInflater layoutInflater= (LayoutInflater) applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.popup_windows, null);
+        View parent = container.findViewById(R.id.ConstraintLayoutPopup);
+        TextView textViewHader = (TextView) container.findViewById(R.id.textViewMessage);
+        textViewHader.setText("Factors (excluding 1 and "+number+") for: "+number);
+        textViewHader.measure(0, 0);
+        TextView textViewFactors = (TextView) container.findViewById(R.id.textViewFactors);
+        textViewFactors.setText(testedList.toString().replaceAll("[\\[\\],]"," ").replaceFirst(" ",""));
+        popupWindow = new PopupWindow(container,textViewHader.getMeasuredWidth()+30,LinearLayout.LayoutParams.WRAP_CONTENT);
+        popupWindow.showAtLocation(v, Gravity.NO_GRAVITY, (int)v.getX() , (int)((View)v.getParent()).getY() + 30);
+
+
         v.setBackgroundDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.border_green));
         int visibleItemCount = recyclerView.getChildCount();
         int firstVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
@@ -65,8 +88,9 @@ class ViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * for handle the end if the long click check if long click is happened then show tool tip
+     * for handle the end of the long click if long click is happened
      * and set te Background to the default Background on the buttons that change
+     * hide the popup window
      * @param v
      * @param event
      * @param factors1
@@ -74,19 +98,16 @@ class ViewHolder extends RecyclerView.ViewHolder {
      */
     private void handleOnTouchRelease(View v, MotionEvent event, List<Integer> factors1, String number ){
         v.onTouchEvent(event);
+
         // check if this action up .
         if (event.getAction() == MotionEvent.ACTION_UP ) {
             // to see if the button is press.
             if (isSpeakButtonLongPressed) {
+                ViewHolder.hidePopupWindow();
+
                 isSpeakButtonLongPressed = false;
                 v.setBackgroundDrawable((Drawable) v.getTag());
-                Tooltip.Builder builder = new Tooltip.Builder(v, R.style.Tooltip)
-                        .setCancelable(true)
-                        .setDismissOnClick(false)
-                        .setCornerRadius(20f)
-                        .setGravity(Gravity.TOP)
-                        .setText("Factors (excluding 1 and "+number+") for:"+number+"\n"+factors1.toString().replaceAll("[\\[\\],]"," "));
-                builder.show();
+
                 //back to default Background
                 for (Button b : listOfReletedButton) {
                     b.setBackgroundDrawable((Drawable) b.getTag());
@@ -130,7 +151,7 @@ class ViewHolder extends RecyclerView.ViewHolder {
         boardRow.getButton1().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                handleLongClick(v,boardRow.getFactors1());
+                handleLongClick(v,boardRow.getFactors1(),boardRow.getB1());
                 return true;
             }
         });
@@ -144,7 +165,7 @@ class ViewHolder extends RecyclerView.ViewHolder {
         boardRow.getButton2().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                handleLongClick(v,boardRow.getFactors2());
+                handleLongClick(v,boardRow.getFactors2(),boardRow.getB2());
                 return true;
             }
         });
@@ -158,7 +179,7 @@ class ViewHolder extends RecyclerView.ViewHolder {
         boardRow.getButton3().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                handleLongClick(v,boardRow.getFactors3());
+                handleLongClick(v,boardRow.getFactors3(),boardRow.getB3());
                 return false;
             }
         });
@@ -172,7 +193,7 @@ class ViewHolder extends RecyclerView.ViewHolder {
         boardRow.getButton4().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                handleLongClick(v,boardRow.getFactors4());
+                handleLongClick(v,boardRow.getFactors4(),boardRow.getB4());
                 return false;
             }
         });
@@ -186,7 +207,7 @@ class ViewHolder extends RecyclerView.ViewHolder {
         boardRow.getButton5().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                handleLongClick(v,boardRow.getFactors5());
+                handleLongClick(v,boardRow.getFactors5(),boardRow.getB5());
                 return false;
             }
         });
@@ -237,5 +258,10 @@ class ViewHolder extends RecyclerView.ViewHolder {
             button1.setBackgroundDrawable(drawable);
             button1.setTag(drawable);
         }
+    }
+
+    public static void hidePopupWindow() {
+        if(ViewHolder.popupWindow != null)
+            ViewHolder.popupWindow.dismiss();
     }
 }
