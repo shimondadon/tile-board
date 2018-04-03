@@ -27,14 +27,14 @@ import board.shimon.theboard.R;
  */
 
 class ViewHolder extends RecyclerView.ViewHolder {
-    RecyclerAdapter recyclerAdapter;
-    RecyclerView recyclerView;
-    View itemView;
+    private final RecyclerAdapter recyclerAdapter;
+    private final RecyclerView recyclerView;
+    private final View itemView;
     private boolean isSpeakButtonLongPressed;
     //static for handle the scroll reset
     public static ArrayList<Button> listOfReletedButton;
-    Context applicationContext;
-    public static PopupWindow popupWindow;
+    private Context applicationContext;
+    private static PopupWindow popupWindow;
 
     ViewHolder(View itemView, RecyclerAdapter recyclerAdapter, RecyclerView recyclerView) {
         super(itemView);
@@ -45,7 +45,7 @@ class ViewHolder extends RecyclerView.ViewHolder {
 
     /**
      * handle long click for all the buttons
-     * save all the buttton that we change them the Background for later rest
+     * save all the button that we change them the Background for later rest
      * change only button that are on the screen when long press in happened
      * ans show the popup window
      * @param v
@@ -55,30 +55,30 @@ class ViewHolder extends RecyclerView.ViewHolder {
         //show the popup window and set the text
         LayoutInflater layoutInflater= (LayoutInflater) applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.popup_windows, null);
-        View parent = container.findViewById(R.id.ConstraintLayoutPopup);
-        TextView textViewHader = (TextView) container.findViewById(R.id.textViewMessage);
-        textViewHader.setText("Factors (excluding 1 and "+number+") for: "+number);
-        textViewHader.measure(0, 0);
-        TextView textViewFactors = (TextView) container.findViewById(R.id.textViewFactors);
+        TextView textViewHeader = container.findViewById(R.id.textViewMessage);
+        textViewHeader.setText( String.format( "Factors (excluding 1 and %s) for: %s", number, number ) );
+        textViewHeader.measure(0, 0);
+        TextView textViewFactors = container.findViewById(R.id.textViewFactors);
+        //for remove '[' ']' ',' replace to space and remove first space
         textViewFactors.setText(testedList.toString().replaceAll("[\\[\\],]"," ").replaceFirst(" ",""));
-        popupWindow = new PopupWindow(container,textViewHader.getMeasuredWidth()+30,LinearLayout.LayoutParams.WRAP_CONTENT);
+        popupWindow = new PopupWindow(container,textViewHeader.getMeasuredWidth()+30,LinearLayout.LayoutParams.WRAP_CONTENT);
         popupWindow.showAtLocation(v, Gravity.NO_GRAVITY, (int)v.getX() , (int)((View)v.getParent()).getY() + 30);
 
 
-        v.setBackgroundDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.border_green));
+        v.setBackground(ContextCompat.getDrawable(applicationContext, R.drawable.border_green));
         int visibleItemCount = recyclerView.getChildCount();
         int firstVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
         isSpeakButtonLongPressed = true;
         listOfReletedButton = new ArrayList<Button>();
-
-        //go over all the button on the screen and check if we need to chabge the Background of them
+        listOfReletedButton.add( (Button) v );
+        //go over all the button on the screen and check if we need to change the Background of them
         for (int i = firstVisibleItem; i < firstVisibleItem + visibleItemCount; i++){
-            BoardRow boardRowToComper = recyclerAdapter.myList.get(i);
-            checkAndChangeBackgroundIfNeed(testedList, applicationContext,boardRowToComper.getFactors1(),boardRowToComper.getButton1());
-            checkAndChangeBackgroundIfNeed(testedList, applicationContext,boardRowToComper.getFactors2(),boardRowToComper.getButton2());
-            checkAndChangeBackgroundIfNeed(testedList, applicationContext,boardRowToComper.getFactors3(),boardRowToComper.getButton3());
-            checkAndChangeBackgroundIfNeed(testedList, applicationContext,boardRowToComper.getFactors4(),boardRowToComper.getButton4());
-            checkAndChangeBackgroundIfNeed(testedList, applicationContext,boardRowToComper.getFactors5(),boardRowToComper.getButton5());
+            BoardRow boardRowToCompare = recyclerAdapter.myList.get(i);
+            checkAndChangeBackgroundIfNeed(testedList, applicationContext,boardRowToCompare.getFactors1(),boardRowToCompare.getButton1());
+            checkAndChangeBackgroundIfNeed(testedList, applicationContext,boardRowToCompare.getFactors2(),boardRowToCompare.getButton2());
+            checkAndChangeBackgroundIfNeed(testedList, applicationContext,boardRowToCompare.getFactors3(),boardRowToCompare.getButton3());
+            checkAndChangeBackgroundIfNeed(testedList, applicationContext,boardRowToCompare.getFactors4(),boardRowToCompare.getButton4());
+            checkAndChangeBackgroundIfNeed(testedList, applicationContext,boardRowToCompare.getFactors5(),boardRowToCompare.getButton5());
         }
     }
 
@@ -88,10 +88,8 @@ class ViewHolder extends RecyclerView.ViewHolder {
      * hide the popup window
      * @param v
      * @param event
-     * @param factors1
-     * @param number
      */
-    private void handleOnTouchRelease(View v, MotionEvent event, List<Integer> factors1, String number ){
+    private void handleOnTouchRelease(View v, MotionEvent event){
         v.onTouchEvent(event);
 
         // check if this action up .
@@ -101,11 +99,11 @@ class ViewHolder extends RecyclerView.ViewHolder {
                 ViewHolder.hidePopupWindow();
 
                 isSpeakButtonLongPressed = false;
-                v.setBackgroundDrawable((Drawable) v.getTag());
+                v.setBackground((Drawable) v.getTag());
 
                 //back to default Background
                 for (Button b : listOfReletedButton) {
-                    b.setBackgroundDrawable((Drawable) b.getTag());
+                    b.setBackground((Drawable) b.getTag());
                 }
                 //clear the tile list that change
                 listOfReletedButton.clear();
@@ -137,11 +135,11 @@ class ViewHolder extends RecyclerView.ViewHolder {
         boardRow.getButton4().setText(boardRow.getB4());
         boardRow.getButton5().setText(boardRow.getB5());
         //set the Background and default Background in tag
-        setButtonStyle(boardRow.getButton1(),boardRow.getFactors1(),boardRow.getB1(),applicationContext, boardRow);
-        setButtonStyle(boardRow.getButton2(),boardRow.getFactors2(),boardRow.getB2(),applicationContext, boardRow);
-        setButtonStyle(boardRow.getButton3(),boardRow.getFactors3(),boardRow.getB3(),applicationContext, boardRow);
-        setButtonStyle(boardRow.getButton4(),boardRow.getFactors4(),boardRow.getB4(),applicationContext, boardRow);
-        setButtonStyle(boardRow.getButton5(),boardRow.getFactors5(),boardRow.getB5(),applicationContext, boardRow);
+        setButtonStyle(boardRow.getButton1(),boardRow.getFactors1(),boardRow.getB1(),applicationContext);
+        setButtonStyle(boardRow.getButton2(),boardRow.getFactors2(),boardRow.getB2(),applicationContext);
+        setButtonStyle(boardRow.getButton3(),boardRow.getFactors3(),boardRow.getB3(),applicationContext);
+        setButtonStyle(boardRow.getButton4(),boardRow.getFactors4(),boardRow.getB4(),applicationContext);
+        setButtonStyle(boardRow.getButton5(),boardRow.getFactors5(),boardRow.getB5(),applicationContext);
         //set Listener for click and long click end
         boardRow.getButton1().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -153,7 +151,7 @@ class ViewHolder extends RecyclerView.ViewHolder {
         boardRow.getButton1().setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                handleOnTouchRelease(v,event,boardRow.getFactors1(),boardRow.getB1());
+                handleOnTouchRelease(v,event);
                 return true;
             }
         });
@@ -167,7 +165,7 @@ class ViewHolder extends RecyclerView.ViewHolder {
         boardRow.getButton2().setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                handleOnTouchRelease(v,event,boardRow.getFactors2(),boardRow.getB2());
+                handleOnTouchRelease(v,event);
                 return true;
             }
         });
@@ -181,7 +179,7 @@ class ViewHolder extends RecyclerView.ViewHolder {
         boardRow.getButton3().setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                handleOnTouchRelease(v,event,boardRow.getFactors3(),boardRow.getB3());
+                handleOnTouchRelease(v,event);
                 return true;
             }
         });
@@ -195,7 +193,7 @@ class ViewHolder extends RecyclerView.ViewHolder {
         boardRow.getButton4().setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                handleOnTouchRelease(v,event,boardRow.getFactors4(),boardRow.getB4());
+                handleOnTouchRelease(v,event);
                 return true;
             }
         });
@@ -209,7 +207,7 @@ class ViewHolder extends RecyclerView.ViewHolder {
         boardRow.getButton5().setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                handleOnTouchRelease(v,event,boardRow.getFactors5(),boardRow.getB5());
+                handleOnTouchRelease(v,event);
                 return true;
             }
         });
@@ -228,7 +226,7 @@ class ViewHolder extends RecyclerView.ViewHolder {
         fullDivided.addAll(factors);
         fullDivided.addAll(testList);
         if(fullDivided.size() != factors.size() + testList.size()){
-            buttonToChange.setBackgroundDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.border_green));
+            buttonToChange.setBackground(ContextCompat.getDrawable(applicationContext, R.drawable.border_green));
             listOfReletedButton.add(buttonToChange);
         }
     }
@@ -239,18 +237,17 @@ class ViewHolder extends RecyclerView.ViewHolder {
      * @param factors
      * @param number
      * @param applicationContext
-     * @param boardRow
      */
-    private void setButtonStyle(Button button1, List<Integer> factors, String number, Context applicationContext, BoardRow boardRow) {
+    private void setButtonStyle(Button button1, List<Integer> factors, String number, Context applicationContext) {
         if(factors.size() == 0 && !(number.equals("0") || number.equals("1"))){
             Drawable drawable = ContextCompat.getDrawable(applicationContext, R.drawable.border_red);
-            button1.setBackgroundDrawable(drawable);
+            button1.setBackground(drawable);
             button1.setTag(drawable);
         }
         else
         {
             Drawable drawable = ContextCompat.getDrawable(applicationContext, R.drawable.border);
-            button1.setBackgroundDrawable(drawable);
+            button1.setBackground(drawable);
             button1.setTag(drawable);
         }
     }
@@ -259,7 +256,7 @@ class ViewHolder extends RecyclerView.ViewHolder {
      * hide the popup window if exist
      */
     public static void hidePopupWindow() {
-        if(ViewHolder.popupWindow != null)
-            ViewHolder.popupWindow.dismiss();
+        if(popupWindow != null)
+            popupWindow.dismiss();
     }
 }

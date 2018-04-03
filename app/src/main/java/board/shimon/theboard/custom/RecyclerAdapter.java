@@ -16,9 +16,9 @@ import board.shimon.theboard.R;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
     //the list of the rows
-    protected List<BoardRow> myList;
-    private Context applicationContext;
-    private RecyclerView recyclerView;
+    final List<BoardRow> myList;
+    private final Context applicationContext;
+    private final RecyclerView recyclerView;
 
     public RecyclerAdapter(List<BoardRow> myList, Context applicationContext, RecyclerView recyclerView) {
         this.myList = myList;

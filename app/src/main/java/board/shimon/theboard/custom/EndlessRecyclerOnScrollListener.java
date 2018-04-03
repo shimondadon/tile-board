@@ -32,7 +32,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
         if(newState == 1 && ViewHolder.listOfReletedButton != null && !ViewHolder.listOfReletedButton.isEmpty()){
             //back to default Background
             for (Button b : ViewHolder.listOfReletedButton) {
-                b.setBackgroundDrawable((Drawable) b.getTag());
+                b.setBackground((Drawable) b.getTag());
             }
             //hide popup window
             ViewHolder.hidePopupWindow();

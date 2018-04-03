@@ -26,10 +26,10 @@ public class MainActivity extends AppCompatActivity{
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.my_recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.my_recycler_view);
 
         recyclerView.setLayoutManager(linearLayoutManager);
-        //this for remove the spaces beatween the rows
+        //this for remove the spaces between the rows
         recyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this, 0));
         mStringList = new ArrayList<>();
         recyclerAdapter = new RecyclerAdapter(mStringList,getApplicationContext(),recyclerView);

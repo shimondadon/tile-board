@@ -15,7 +15,7 @@ public class BoardRow {
     //save the factors for each button
     private List<Integer> factors1,factors2,factors3,factors4,factors5;
     //save the button for change the Background
-    Button button1,button2,button3,button4,button5;
+    private Button button1,button2,button3,button4,button5;
 
     /**
      * object for one row in the view
@@ -39,8 +39,8 @@ public class BoardRow {
 
     /**
      * calc the factor of the input number
-     * @param val
-     * @return
+     * @param val input number
+     * @return the Factors numbers
      */
     private List<Integer> factorsOf (int val) {
         List<Integer> factors  = new ArrayList<Integer>();
