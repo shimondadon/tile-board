@@ -2,8 +2,6 @@ package board.shimon.theboard.custom;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,10 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.content.Context;
 import android.widget.TextView;
-
-import com.tooltip.Tooltip;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -260,6 +255,9 @@ class ViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    /**
+     * hide the popup window if exist
+     */
     public static void hidePopupWindow() {
         if(ViewHolder.popupWindow != null)
             ViewHolder.popupWindow.dismiss();
