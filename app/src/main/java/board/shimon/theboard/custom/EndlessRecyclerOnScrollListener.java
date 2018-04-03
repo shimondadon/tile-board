@@ -1,7 +1,9 @@
 package board.shimon.theboard.custom;
 
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Button;
 
 import java.util.List;
 
@@ -17,14 +19,8 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
      */
     private boolean mLoading = true;
 
-    private RecyclerAdapter recyclerAdapter;
+    public EndlessRecyclerOnScrollListener() {
 
-    /**
-     * save the recyclerAdapter for refresh the view if scroll
-     * @param recyclerAdapter
-     */
-    public EndlessRecyclerOnScrollListener(RecyclerAdapter recyclerAdapter) {
-        this.recyclerAdapter = recyclerAdapter;
     }
 
     /**
@@ -36,7 +32,10 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
         if(newState == 1 && ViewHolder.listOfReletedButton != null && !ViewHolder.listOfReletedButton.isEmpty()){
-            recyclerAdapter.notifyDataSetChanged();
+            //back to default Background
+            for (Button b : ViewHolder.listOfReletedButton) {
+                b.setBackgroundDrawable((Drawable) b.getTag());
+            }
             ViewHolder.listOfReletedButton.clear();
         }
     }

@@ -29,7 +29,7 @@ class ViewHolder extends RecyclerView.ViewHolder {
     View itemView;
     private boolean isSpeakButtonLongPressed;
     //static for handle the scroll reset
-    static ArrayList<Button> listOfReletedButton;
+    public static ArrayList<Button> listOfReletedButton;
     Context applicationContext;
 
     ViewHolder(View itemView, RecyclerAdapter recyclerAdapter, RecyclerView recyclerView) {
@@ -64,13 +64,20 @@ class ViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    /**
+     * for handle the end if the long click check if long click is happened then show tool tip
+     * and set te Background to the default Background on the buttons that change
+     * @param v
+     * @param event
+     * @param factors1
+     * @param number
+     */
     private void handleOnTouchRelease(View v, MotionEvent event, List<Integer> factors1, String number ){
         v.onTouchEvent(event);
-        // We're only interested in when the button is released.
+        // check if this action up .
         if (event.getAction() == MotionEvent.ACTION_UP ) {
-            // We're only interested in anything if our speak button is currently pressed.
+            // to see if the button is press.
             if (isSpeakButtonLongPressed) {
-                // Do something when the button is released.
                 isSpeakButtonLongPressed = false;
                 v.setBackgroundDrawable((Drawable) v.getTag());
                 Tooltip.Builder builder = new Tooltip.Builder(v, R.style.Tooltip)
@@ -80,32 +87,46 @@ class ViewHolder extends RecyclerView.ViewHolder {
                         .setGravity(Gravity.TOP)
                         .setText("Factors (excluding 1 and "+number+") for:"+number+"\n"+factors1.toString().replaceAll("[\\[\\],]"," "));
                 builder.show();
+                //back to default Background
                 for (Button b : listOfReletedButton) {
                     b.setBackgroundDrawable((Drawable) b.getTag());
                 }
+                //clear the tile list that change
                 listOfReletedButton.clear();
             }
         }
     }
 
-    public void setDividedList(final Context applicationContext, final BoardRow boardRow) {
+    /**
+     * init all the information that we need for the boar row
+     * save the buttons
+     * set the text of the buttons
+     * set the Background and default Background in tag
+     * set Listener for click and long click end
+     * @param applicationContext
+     * @param boardRow
+     */
+    public void initBoardRow(final Context applicationContext, final BoardRow boardRow) {
         this.applicationContext = applicationContext;
+        //save the buttons
         boardRow.setButton1((Button) itemView.findViewById(R.id.Button1));
         boardRow.setButton2((Button) itemView.findViewById(R.id.Button2));
         boardRow.setButton3((Button) itemView.findViewById(R.id.Button3));
         boardRow.setButton4((Button) itemView.findViewById(R.id.Button4));
         boardRow.setButton5((Button) itemView.findViewById(R.id.Button5));
+        //set the text of the buttons
         boardRow.getButton1().setText(boardRow.getB1());
         boardRow.getButton2().setText(boardRow.getB2());
         boardRow.getButton3().setText(boardRow.getB3());
         boardRow.getButton4().setText(boardRow.getB4());
         boardRow.getButton5().setText(boardRow.getB5());
+        //set the Background and default Background in tag
         setButtonStyle(boardRow.getButton1(),boardRow.getFactors1(),boardRow.getB1(),applicationContext, boardRow);
         setButtonStyle(boardRow.getButton2(),boardRow.getFactors2(),boardRow.getB2(),applicationContext, boardRow);
         setButtonStyle(boardRow.getButton3(),boardRow.getFactors3(),boardRow.getB3(),applicationContext, boardRow);
         setButtonStyle(boardRow.getButton4(),boardRow.getFactors4(),boardRow.getB4(),applicationContext, boardRow);
         setButtonStyle(boardRow.getButton5(),boardRow.getFactors5(),boardRow.getB5(),applicationContext, boardRow);
-
+        //set Listener for click and long click end
         boardRow.getButton1().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -178,6 +199,14 @@ class ViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
+    /**
+     * check if we have one or more related factors
+     * if we have set the Background to green and add this button to the list of button change
+     * @param testList
+     * @param applicationContext
+     * @param factors
+     * @param buttonToChange
+     */
     private void checkAndChangeBackgroundIfNeed(List<Integer> testList, Context applicationContext, List<Integer> factors,Button buttonToChange) {
         Set<Integer> fullDivided = new HashSet<Integer>();
         fullDivided.addAll(factors);
@@ -188,6 +217,14 @@ class ViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    /**
+     * set and determine the Background and default Background in tag
+     * @param button1
+     * @param factors
+     * @param number
+     * @param applicationContext
+     * @param boardRow
+     */
     private void setButtonStyle(Button button1, List<Integer> factors, String number, Context applicationContext, BoardRow boardRow) {
         if(factors.size() == 0 && !(number.equals("0") || number.equals("1"))){
             Drawable drawable = ContextCompat.getDrawable(applicationContext, R.drawable.border_red);

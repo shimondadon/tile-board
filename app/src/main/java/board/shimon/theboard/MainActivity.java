@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity{
         recyclerView.setAdapter(recyclerAdapter);
         addDataToList();
 
-        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(recyclerAdapter) {
+        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onLoadMore() {
                 addDataToList();
@@ -45,17 +45,20 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 
+    /**
+     * add new board row to the view 500 line each time
+     */
     private void addDataToList() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i <= 500; i++) {
-                    mStringList.add(new BoardRow(mLoadedItems));
-                    mLoadedItems += 5;
-                }
-                recyclerAdapter.notifyDataSetChanged();
+            for (int i = 0; i <= 500; i++) {
+                mStringList.add(new BoardRow(mLoadedItems));
+                mLoadedItems += 5;
             }
-        }, 1500);
+            recyclerAdapter.notifyDataSetChanged();
+            }
+        }, 10);
 
     }
 }
